@@ -33,4 +33,14 @@ df['gluc'] = np.where(df['gluc'] > 1, 0, 1)
 #           by 'Cardio' so there is one chart for each cardio value. 
 #           The chart should look like examples/Figure_1.png.
 
+# Data into long format
+df_long = pd.melt(df, id_vars=['cardio'], value_vars=['cholesterol', 'gluc', 'smoke', 'alco', 'active', 'overweight'])
+
+# Grouping and reformatting data so that it is split by cardio. 
+df_long["total"] = 1
+df_long = df_long.groupby(['cardio', 'variable', 'value'], as_index = False).count()
+
+# creating the catplot in seaborn and saving it to a png
+fig = sns.catplot(data=df_long, x='variable', y='total', hue='value', kind='bar', col='cardio').fig
+fig.savefig('catplot.png')
 
