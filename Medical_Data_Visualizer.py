@@ -44,3 +44,27 @@ df_long = df_long.groupby(['cardio', 'variable', 'value'], as_index = False).cou
 fig = sns.catplot(data=df_long, x='variable', y='total', hue='value', kind='bar', col='cardio').fig
 fig.savefig('catplot.png')
 
+## Task 4: Clean the data. Filter out the following patient segments that represent incorrect data.
+
+# Filtering out incorrect diastolic pressures. 
+
+df_heat = df[
+    (df['ap_lo'] <= df['ap_hi']) &
+    (df['height'] >= df['height'].quantile(0.025)) &
+    (df['height'] <= df['height'].quantile(0.975)) &
+    (df['weight'] >= df['weight'].quantile(0.025)) & 
+    (df['weight'] <= df['weight'].quantile(0.975))]
+
+
+
+# Creating a correlation matrix using a heatmap chart w/seaborn. Also, masking the upper triangle. 
+
+corr = df_heat.corr()
+
+mask = np.triu(corr)
+
+fig, ax = plt.subplots(figsize=(12,12))
+
+sns.heatmap(corr, mask = mask, annot=True, fmt='0.1')
+
+fig.savefig('heatmap.png')
